@@ -6,18 +6,22 @@ import { checkNull } from '../../utils/validator'
 import HDInputItem from '../../components/HDInputItem'
 import { Actions } from 'react-native-router-flux'
 
-const Signin = () => {
+const Signup = () => {
     // 用户名
     const [userName, setUserName] = useState('')
     // 用户名错误信息
     const [userNameErrorMsg, setUserNameErrorMsg] = useState(null)
     // 密码
     const [password, setPassword] = useState('')
-    // 密码错误信息
+    // 密码名错误信息
     const [passwordErrorMsg, setPasswordErrorMsg] = useState(null)
+    // 确认密码
+    const [confirmPassword, setconfirmPassword] = useState('')
+    // 确认密码名错误信息
+    const [confirmPasswordErrorMsg, setconfirmPasswordErrorMsg] = useState(null)
 
-    // 登录事件
-    const handleSingin = () => {
+    // 注册事件
+    const handleSignup = () => {
         console.log(('username', userName));
         const checkUserNameErrorMsg = checkNull(userName, '用户名')
         const checkPasswordErrorMsg = checkNull(password, '密码')
@@ -35,7 +39,7 @@ const Signin = () => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.headerText}>登录</Text>
+                <Text style={styles.headerText}>注册</Text>
             </View>
             <View>
                 <HDInputItem placeholder="请输入用户名" clear value={userName} onChange={text => setUserName(text)} required={true} errorMsg={userNameErrorMsg} >用户名</HDInputItem>
@@ -43,19 +47,22 @@ const Signin = () => {
             <View>
                 <HDInputItem placeholder="请输入密码" clear type="password" value={password} onChange={text => setPassword(text)} required={true} errorMsg={passwordErrorMsg}>密码</HDInputItem>
             </View>
-            <View style={styles.signinButton}>
-                <Button type="primary" onPress={() => handleSingin()}>登录</Button>
+            <View>
+                <HDInputItem placeholder="请再次输入密码" clear type="password" value={password} onChange={text => setPassword(text)} required={true} errorMsg={passwordErrorMsg}>确认密码</HDInputItem>
             </View>
-            <View style={styles.signupText}>
-                <Text>没有账号？先</Text>
-                <Text style={commonStyle.linkText} onPress={() => Actions.signup()}>注册</Text>
+            <View style={styles.signupButton}>
+                <Button type="primary" onPress={() => handleSignup()}>注册</Button>
+            </View>
+            <View style={styles.signinText}>
+                <Text>已有账号？去</Text>
+                <Text style={commonStyle.linkText} onPress={() => Actions.signin()}>登录</Text>
                 <Text>吧</Text>
             </View>
         </View>
     )
 }
 
-export default Signin
+export default Signup
 
 const styles = StyleSheet.create({
     container: {
@@ -74,10 +81,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#158EE9',
     },
-    signinButton: {
+    signupButton: {
         marginTop: 20,
     },
-    signupText: {
+    signinText: {
         marginTop: 20,
         flexDirection: 'row',
         justifyContent: 'center',

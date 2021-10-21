@@ -1,5 +1,6 @@
 export const routeName = {
-    'SIGNIN': 'SIGNIN',
-    'SIGNOUT': 'SIGNOUT',
-    'HOME': 'HOME',
+    'root': 'root',
+    'signin': 'signin',
+    'signup': 'signup',
+    'home': 'home',
 }
