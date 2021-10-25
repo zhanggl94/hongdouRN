@@ -1,13 +1,11 @@
 import axios from 'axios'
-import { Spin, message } from 'antd'
-import ReactDOM from 'react-dom'
 import baseUrl from '../api/baseUrl'
-import { getLocalStorageItem } from '../util/utils'
+import store from '../reduxTKL/store'
+import { startLoading, finishLoading } from '../reduxTKL/slices/loading'
+import { modalError } from '../components/HDModal'
 
-axios.defaults.baseURL = 'http://localhost:3001/api/'
+axios.defaults.baseURL = 'http://10.201.246.86:3001/api/'
 axios.defaults.timeout = 2000 * 10; // 超时时间
-// axios.defaults.headers.post['Content-Type'] = 'application/json'; //请求头 
-
 let requestCount = 0; // 计数器
 
 // 请求拦截器
@@ -25,12 +23,13 @@ axios.interceptors.request.use(config => {
 // 响应拦截器
 axios.interceptors.response.use(res => {
     hideLoading();
+    console.log('返回结果', res);
     return Promise.resolve(res)
 }, error => {
     hideLoading();
     const { response } = error;
     if (!response) {
-        message.error(error.message)
+         modalError(error.message)
     }
     if (response.status !== 200) {
         handleError(response.status, response.data.message)
@@ -44,34 +43,31 @@ const handleError = (status, resMessage) => {
         // 未登录，跳转到登陆页面
         case 401:
             if (resMessage) {
-                message.error(resMessage);
+                 modalError(resMessage);
             } else {
-                message.error('未通过认证，请重新登录')
+                 modalError('未通过认证，请重新登录')
             }
             break;
         // 权限不足
         case 403:
-            message.error('权限不足')
+             modalError('权限不足')
             break
         // 404请求不存在
         case 404:
-            message.error('页面不存在')
+             modalError('页面不存在')
             break
         case 500:
-            message.error('服务器错误')
+             modalError('服务器错误')
             break
         default:
-            message.error(resMessage)
+            modalError(resMessage)
     }
 }
 
 // 显示loading
 const showLoading = () => {
     if (requestCount === 0) {
-        const loadDom = document.createElement('div');
-        loadDom.setAttribute('id', 'loading')
-        document.body.appendChild(loadDom)
-        ReactDOM.render(<Spin tip="加载中..." />, loadDom)
+        store.dispatch(startLoading())
     }
     requestCount++;
 }
@@ -80,7 +76,7 @@ const showLoading = () => {
 const hideLoading = () => {
     requestCount--;
     if (requestCount < 1) {
-        document.body.removeChild(document.getElementById('loading'))
+        store.dispatch(finishLoading())
     }
 }
 

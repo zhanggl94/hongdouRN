@@ -5,6 +5,7 @@ import commonStyle from '../../utils/commonStyle'
 import { checkNull } from '../../utils/validator'
 import HDInputItem from '../../components/HDInputItem'
 import { Actions } from 'react-native-router-flux'
+import { userSignup } from '../../api/user'
 
 const Signup = () => {
     // 用户名
@@ -21,19 +22,29 @@ const Signup = () => {
     const [confirmPasswordErrorMsg, setconfirmPasswordErrorMsg] = useState(null)
 
     // 注册事件
-    const handleSignup = () => {
-        console.log(('username', userName));
+    const handleSignup = async () => {
         const checkUserNameErrorMsg = checkNull(userName, '用户名')
         const checkPasswordErrorMsg = checkNull(password, '密码')
 
         checkUserNameErrorMsg !== userNameErrorMsg ? setUserNameErrorMsg(checkUserNameErrorMsg) : ''
         checkPasswordErrorMsg !== passwordErrorMsg ? setPasswordErrorMsg(checkPasswordErrorMsg) : ''
 
+        try {
+            const result = await userSignup({ userName, password })
+            console.log('signup: ', result);
+        } catch (error) {
+            console.error('signup failed: ', error);
+        }
+
         if (checkUserNameErrorMsg || checkPasswordErrorMsg) {
             return false
         }
 
+        dispatch(startLoading())
 
+        setTimeout(() => {
+            dispatch(finishLoading())
+        }, 3000);
     }
 
     return (
@@ -48,15 +59,14 @@ const Signup = () => {
                 <HDInputItem placeholder="请输入密码" clear type="password" value={password} onChange={text => setPassword(text)} required={true} errorMsg={passwordErrorMsg}>密码</HDInputItem>
             </View>
             <View>
-                <HDInputItem placeholder="请再次输入密码" clear type="password" value={password} onChange={text => setPassword(text)} required={true} errorMsg={passwordErrorMsg}>确认密码</HDInputItem>
+                <HDInputItem placeholder="请再次输入密码" clear type="password" value={confirmPassword} onChange={text => setconfirmPassword(text)} required={true} errorMsg={confirmPasswordErrorMsg}>确认密码</HDInputItem>
             </View>
             <View style={styles.signupButton}>
                 <Button type="primary" onPress={() => handleSignup()}>注册</Button>
             </View>
             <View style={styles.signinText}>
-                <Text>已有账号？去</Text>
-                <Text style={commonStyle.linkText} onPress={() => Actions.signin()}>登录</Text>
-                <Text>吧</Text>
+                <Text>已有账号？</Text>
+                <Text style={commonStyle.linkText} onPress={() => Actions.signin()}>去登录吧</Text>
             </View>
         </View>
     )

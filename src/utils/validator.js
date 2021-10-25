@@ -21,3 +21,18 @@ export const checkNull = (text, title) => {
         return `请输入${title}`
     return ''
 }
+
+
+export const checkEqual = (oldStr, newStr, title) => {
+    if (oldStr !== newStr)
+        return `${title}不一致`
+    return ''
+}
+
+
+export const valdate = (funcs) => {
+    let msg=''
+    for(const func in funcs){
+        msg = func
+    }
+}

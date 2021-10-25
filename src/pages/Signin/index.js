@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
-import { Button } from '@ant-design/react-native'
+import { Button, Toast, Modal, Provider } from '@ant-design/react-native'
 import commonStyle from '../../utils/commonStyle'
 import { checkNull } from '../../utils/validator'
 import HDInputItem from '../../components/HDInputItem'
@@ -18,7 +18,7 @@ const Signin = () => {
 
     // 登录事件
     const handleSingin = () => {
-        console.log(('username', userName));
+        
         const checkUserNameErrorMsg = checkNull(userName, '用户名')
         const checkPasswordErrorMsg = checkNull(password, '密码')
 
@@ -47,9 +47,8 @@ const Signin = () => {
                 <Button type="primary" onPress={() => handleSingin()}>登录</Button>
             </View>
             <View style={styles.signupText}>
-                <Text>没有账号？先</Text>
-                <Text style={commonStyle.linkText} onPress={() => Actions.signup()}>注册</Text>
-                <Text>吧</Text>
+                <Text>没有账号？</Text>
+                <Text style={commonStyle.linkText} onPress={() => Actions.signup()}>先注册吧</Text>
             </View>
         </View>
     )
